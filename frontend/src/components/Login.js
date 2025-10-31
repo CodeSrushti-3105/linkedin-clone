@@ -40,9 +40,12 @@ function Login() {
         border: "1px solid #ddd",
         borderRadius: "8px",
         textAlign: "center",
+        backgroundColor: "#fff",
+        boxShadow: "0 2px 8px rgba(0,0,0,0.1)",
       }}
     >
-      <h2>Login</h2>
+      <h2 style={{ marginBottom: "20px" }}>Login</h2>
+
       <form onSubmit={handleLogin}>
         <input
           type="email"
@@ -50,16 +53,30 @@ function Login() {
           value={email}
           onChange={(e) => setEmail(e.target.value)}
           required
-          style={{ width: "100%", marginBottom: "10px", padding: "8px" }}
+          style={{
+            width: "100%",
+            marginBottom: "10px",
+            padding: "10px",
+            borderRadius: "5px",
+            border: "1px solid #ccc",
+          }}
         />
+
         <input
           type="password"
           placeholder="Password"
           value={password}
           onChange={(e) => setPassword(e.target.value)}
           required
-          style={{ width: "100%", marginBottom: "10px", padding: "8px" }}
+          style={{
+            width: "100%",
+            marginBottom: "10px",
+            padding: "10px",
+            borderRadius: "5px",
+            border: "1px solid #ccc",
+          }}
         />
+
         <button
           type="submit"
           style={{
@@ -70,11 +87,28 @@ function Login() {
             borderRadius: "6px",
             cursor: "pointer",
             fontWeight: "bold",
+            width: "100%",
+            marginBottom: "10px",
           }}
         >
           Login
         </button>
       </form>
+
+      {/* ✅ Don’t have account → Signup link */}
+      <p style={{ marginTop: "15px" }}>
+        Don’t have an account?{" "}
+        <span
+          onClick={() => navigate("/signup")}
+          style={{
+            color: "#0A66C2",
+            cursor: "pointer",
+            fontWeight: "bold",
+          }}
+        >
+          Sign up here
+        </span>
+      </p>
     </div>
   );
 }
