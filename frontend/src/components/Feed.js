@@ -1,11 +1,19 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
+import { useNavigate } from "react-router-dom";
 
 function Feed() {
   const [posts, setPosts] = useState([]);
   const [text, setText] = useState("");
-  const [error, setError] = useState("");
   const token = localStorage.getItem("token");
+  const navigate = useNavigate();
+
+  // ✅ Logout function
+  const handleLogout = () => {
+    localStorage.removeItem("token");
+    alert("Logged out successfully!");
+    navigate("/login");
+  };
 
   // ✅ Fetch posts
   useEffect(() => {
@@ -14,45 +22,58 @@ function Feed() {
         const res = await axios.get("http://localhost:5000/api/posts", {
           headers: { Authorization: `Bearer ${token}` },
         });
-
-        if (Array.isArray(res.data)) {
-          setPosts(res.data);
-        } else {
-          console.error("Unexpected response:", res.data);
-          setPosts([]);
-        }
+        setPosts(Array.isArray(res.data) ? res.data : []); // ensure array
       } catch (err) {
-        console.error("Error fetching posts:", err);
-        setError("Failed to load posts");
+        console.error("Error fetching posts", err);
       }
     };
     fetchPosts();
   }, [token]);
 
-  // ✅ Create post
+  // ✅ Create new post
   const handlePost = async (e) => {
     e.preventDefault();
-    setError("");
-
     try {
       const res = await axios.post(
         "http://localhost:5000/api/posts",
         { userName: "Srushti", text },
         { headers: { Authorization: `Bearer ${token}` } }
       );
-
-      setPosts((prev) => [res.data, ...prev]);
+      setPosts([res.data, ...posts]);
       setText("");
     } catch (err) {
-      console.error("Error creating post:", err.response?.data || err.message);
-      setError("Error creating post. Check console for details.");
+      console.error("Error creating post", err);
     }
   };
 
   return (
     <div style={{ maxWidth: "600px", margin: "30px auto", textAlign: "center" }}>
-      <h2>LinkedIn Feed 📰</h2>
+      {/* ✅ Header with Logout */}
+      <div
+        style={{
+          display: "flex",
+          justifyContent: "space-between",
+          alignItems: "center",
+          marginBottom: "20px",
+        }}
+      >
+        <h2>LinkedIn Feed 📰</h2>
+        <button
+          onClick={handleLogout}
+          style={{
+            background: "crimson",
+            color: "white",
+            border: "none",
+            padding: "8px 14px",
+            borderRadius: "5px",
+            cursor: "pointer",
+          }}
+        >
+          Logout
+        </button>
+      </div>
 
+      {/* ✅ Post Form */}
       <form onSubmit={handlePost}>
         <textarea
           rows="3"
@@ -66,10 +87,9 @@ function Feed() {
         </button>
       </form>
 
-      {error && <p style={{ color: "red" }}>{error}</p>}
-
+      {/* ✅ Posts List */}
       <div style={{ marginTop: "30px" }}>
-        {Array.isArray(posts) && posts.length > 0 ? (
+        {posts.length > 0 ? (
           posts.map((post) => (
             <div
               key={post._id}
@@ -87,7 +107,7 @@ function Feed() {
             </div>
           ))
         ) : (
-          <p>No posts yet.</p>
+          <p>No posts yet. Start by creating one!</p>
         )}
       </div>
     </div>
