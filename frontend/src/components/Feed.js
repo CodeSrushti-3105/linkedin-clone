@@ -7,10 +7,10 @@ function Feed() {
   const [posts, setPosts] = useState([]);
   const [text, setText] = useState("");
   const [userName, setUserName] = useState("");
+  const [commentText, setCommentText] = useState("");
   const token = localStorage.getItem("token");
   const navigate = useNavigate();
 
-  // ✅ Safe JSON parse helper
   const safeParse = (data) => {
     try {
       return JSON.parse(data);
@@ -19,14 +19,12 @@ function Feed() {
     }
   };
 
-  // ✅ Logout function (to pass into Navbar)
   const handleLogout = () => {
     localStorage.removeItem("token");
     localStorage.removeItem("user");
     navigate("/login");
   };
 
-  // ✅ Redirect if not logged in
   useEffect(() => {
     if (!token) {
       navigate("/login");
@@ -36,13 +34,11 @@ function Feed() {
       if (user) {
         setUserName(user.name || user.email || "User");
       } else {
-        // If invalid JSON, log out safely
         handleLogout();
       }
     }
   }, [token, navigate]);
 
-  // ✅ Fetch posts from backend
   const fetchPosts = async () => {
     try {
       const res = await axios.get("http://localhost:5000/api/posts", {
@@ -62,7 +58,6 @@ function Feed() {
     fetchPosts();
   }, [token]);
 
-  // ✅ Create a new post
   const handlePost = async (e) => {
     e.preventDefault();
     if (!text.trim()) {
@@ -85,7 +80,6 @@ function Feed() {
     }
   };
 
-  // ✅ Like a post (frontend-only)
   const handleLike = (id) => {
     setPosts(
       posts.map((post) =>
@@ -96,7 +90,6 @@ function Feed() {
     );
   };
 
-  // ✅ Delete a post
   const handleDelete = async (id) => {
     const confirmDelete = window.confirm("Are you sure you want to delete this post?");
     if (!confirmDelete) return;
@@ -114,10 +107,33 @@ function Feed() {
     }
   };
 
+  // ✅ Add comment to post
+  const handleAddComment = async (postId) => {
+    if (!commentText.trim()) {
+      alert("Please enter a comment!");
+      return;
+    }
+    try {
+      const res = await axios.post(
+        `http://localhost:5000/api/posts/${postId}/comments`,
+        { userName, text: commentText },
+        { headers: { Authorization: `Bearer ${token}` } }
+      );
+      setPosts(
+        posts.map((post) =>
+          post._id === postId ? { ...post, comments: res.data } : post
+        )
+      );
+      setCommentText("");
+    } catch (err) {
+      console.error("Error adding comment:", err);
+      alert("Failed to add comment!");
+    }
+  };
+
   return (
     <>
       <Navbar onLogout={handleLogout} />
-
       <div
         style={{
           maxWidth: "600px",
@@ -129,7 +145,6 @@ function Feed() {
         <h2 style={{ color: "#0A66C2" }}>Welcome, {userName}! 👋</h2>
         <p style={{ color: "gray" }}>Share your thoughts with everyone</p>
 
-        {/* ✅ Create Post Form */}
         <form
           onSubmit={handlePost}
           style={{
@@ -172,7 +187,6 @@ function Feed() {
           </button>
         </form>
 
-        {/* ✅ All Posts */}
         <div style={{ marginTop: "30px" }}>
           {posts.length > 0 ? (
             posts.map((post) => (
@@ -188,22 +202,12 @@ function Feed() {
                 }}
               >
                 <strong style={{ color: "#0A66C2" }}>{post.userName}</strong>
-                <p style={{ marginTop: "8px", marginBottom: "6px" }}>
-                  {post.text}
-                </p>
+                <p style={{ marginTop: "8px", marginBottom: "6px" }}>{post.text}</p>
                 <small style={{ color: "gray" }}>
                   {new Date(post.createdAt).toLocaleString()}
                 </small>
 
-                {/* ✅ Buttons */}
-                <div
-                  style={{
-                    marginTop: "10px",
-                    display: "flex",
-                    gap: "15px",
-                  }}
-                >
-                  {/* Like button */}
+                <div style={{ marginTop: "10px", display: "flex", gap: "15px" }}>
                   <button
                     onClick={() => handleLike(post._id)}
                     disabled={post.liked}
@@ -219,8 +223,6 @@ function Feed() {
                   >
                     👍 Like ({post.likes || 0})
                   </button>
-
-                  {/* Delete button */}
                   <button
                     onClick={() => handleDelete(post._id)}
                     style={{
@@ -235,6 +237,56 @@ function Feed() {
                   >
                     🗑️ Delete
                   </button>
+                </div>
+
+                {/* ✅ Comment Section */}
+                <div style={{ marginTop: "10px" }}>
+                  <h4 style={{ color: "#0A66C2" }}>Comments</h4>
+                  {post.comments?.length > 0 ? (
+                    post.comments.map((c, index) => (
+                      <div
+                        key={index}
+                        style={{
+                          background: "#f3f2ef",
+                          borderRadius: "6px",
+                          padding: "5px 10px",
+                          marginTop: "5px",
+                        }}
+                      >
+                        <strong>{c.userName}:</strong> {c.text}
+                      </div>
+                    ))
+                  ) : (
+                    <p style={{ color: "gray" }}>No comments yet.</p>
+                  )}
+                  <div style={{ marginTop: "8px" }}>
+                    <input
+                      type="text"
+                      placeholder="Write a comment..."
+                      value={commentText}
+                      onChange={(e) => setCommentText(e.target.value)}
+                      style={{
+                        width: "80%",
+                        padding: "6px",
+                        borderRadius: "6px",
+                        border: "1px solid #ccc",
+                        marginRight: "5px",
+                      }}
+                    />
+                    <button
+                      onClick={() => handleAddComment(post._id)}
+                      style={{
+                        background: "#0A66C2",
+                        color: "white",
+                        border: "none",
+                        padding: "6px 10px",
+                        borderRadius: "6px",
+                        cursor: "pointer",
+                      }}
+                    >
+                      Comment
+                    </button>
+                  </div>
                 </div>
               </div>
             ))
