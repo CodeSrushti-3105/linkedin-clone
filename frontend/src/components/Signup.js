@@ -11,7 +11,7 @@ function Signup() {
   const handleSignup = async (e) => {
     e.preventDefault();
     try {
-      await axios.post("https://linkedin-clone-b4p3.onrender.com/api/auth/signup", {
+      await axios.post(`${process.env.REACT_APP_BACKEND_URL}/api/auth/signup`, {
         name,
         email,
         password,

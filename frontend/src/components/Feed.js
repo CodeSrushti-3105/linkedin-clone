@@ -11,6 +11,9 @@ function Feed() {
   const token = localStorage.getItem("token");
   const navigate = useNavigate();
 
+  // ✅ use backend URL from .env
+  const backendURL = process.env.REACT_APP_BACKEND_URL;
+
   const safeParse = (data) => {
     try {
       return JSON.parse(data);
@@ -41,7 +44,7 @@ function Feed() {
 
   const fetchPosts = async () => {
     try {
-      const res = await axios.get("https://linkedin-clone-b4p3.onrender.com/api/posts", {
+      const res = await axios.get(`${backendURL}/api/posts`, {
         headers: { Authorization: `Bearer ${token}` },
       });
       if (Array.isArray(res.data)) {
@@ -67,7 +70,7 @@ function Feed() {
 
     try {
       const res = await axios.post(
-        "https://linkedin-clone-b4p3.onrender.com/api/posts",
+        `${backendURL}/api/posts`,
         { userName, text },
         { headers: { Authorization: `Bearer ${token}` } }
       );
@@ -95,7 +98,7 @@ function Feed() {
     if (!confirmDelete) return;
 
     try {
-      await axios.delete(`https://linkedin-clone-b4p3.onrender.com/api/posts/${id}`, {
+      await axios.delete(`${backendURL}/api/posts/${id}`, {
         headers: { Authorization: `Bearer ${token}` },
       });
 
@@ -107,7 +110,6 @@ function Feed() {
     }
   };
 
-  // ✅ Add comment to post
   const handleAddComment = async (postId) => {
     if (!commentText.trim()) {
       alert("Please enter a comment!");
@@ -115,7 +117,7 @@ function Feed() {
     }
     try {
       const res = await axios.post(
-        `https://linkedin-clone-b4p3.onrender.com/api/posts/${postId}/comments`,
+        `${backendURL}/api/posts/${postId}/comments`,
         { userName, text: commentText },
         { headers: { Authorization: `Bearer ${token}` } }
       );
