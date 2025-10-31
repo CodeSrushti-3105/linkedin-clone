@@ -1,0 +1,24 @@
+### 1️⃣ Create a Post
+POST http://localhost:5000/api/posts/create
+Content-Type: application/json
+Authorization: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY5MDJlY2QyNzNlYTk1NTRlMGY1ZDg1MSIsImlhdCI6MTc2MTg5ODI1MCwiZXhwIjoxNzYxOTg0NjUwfQ.vA4RciyxzeeJk5kxCsPuThN0_2hIBdu7sqFPibd3_-U
+
+{
+  "text": "Hello LinkedIn Clone! This is my first post 🚀"
+}
+
+### 2️⃣ Get All Posts
+GET http://localhost:5000/api/posts/all
+Authorization: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY5MDJlY2QyNzNlYTk1NTRlMGY1ZDg1MSIsImlhdCI6MTc2MTg5ODI1MCwiZXhwIjoxNzYxOTg0NjUwfQ.vA4RciyxzeeJk5kxCsPuThN0_2hIBdu7sqFPibd3_-U
+
+### 3️⃣ Like a Post
+PUT http://localhost:5000/api/posts/like/69046f58370d91033d60804b
+Authorization: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY5MDJlY2QyNzNlYTk1NTRlMGY1ZDg1MSIsImlhdCI6MTc2MTg5ODI1MCwiZXhwIjoxNzYxOTg0NjUwfQ.vA4RciyxzeeJk5kxCsPuThN0_2hIBdu7sqFPibd3_-U
+
+### 4️⃣ Unlike a Post
+PUT http://localhost:5000/api/posts/unlike/69046f58370d91033d60804b
+Authorization: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY5MDJlY2QyNzNlYTk1NTRlMGY1ZDg1MSIsImlhdCI6MTc2MTg5ODI1MCwiZXhwIjoxNzYxOTg0NjUwfQ.vA4RciyxzeeJk5kxCsPuThN0_2hIBdu7sqFPibd3_-U
+
+### 5️⃣ Delete a Post
+DELETE http://localhost:5000/api/posts/delete/69046f58370d91033d60804b
+Authorization: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY5MDJlY2QyNzNlYTk1NTRlMGY1ZDg1MSIsImlhdCI6MTc2MTg5ODI1MCwiZXhwIjoxNzYxOTg0NjUwfQ.vA4RciyxzeeJk5kxCsPuThN0_2hIBdu7sqFPibd3_-U
