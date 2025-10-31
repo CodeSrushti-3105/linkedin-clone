@@ -18,7 +18,7 @@ function CreatePost() {
     e.preventDefault();
     try {
       await axios.post(
-        "http://localhost:5000/api/posts",
+        "https://linkedin-clone-b4p3.onrender.com/api/posts",
         { userName: "Srushti", text },
         { headers: { Authorization: `Bearer ${token}` } }
       );

@@ -41,7 +41,7 @@ function Feed() {
 
   const fetchPosts = async () => {
     try {
-      const res = await axios.get("http://localhost:5000/api/posts", {
+      const res = await axios.get("https://linkedin-clone-b4p3.onrender.com/api/posts", {
         headers: { Authorization: `Bearer ${token}` },
       });
       if (Array.isArray(res.data)) {
@@ -67,7 +67,7 @@ function Feed() {
 
     try {
       const res = await axios.post(
-        "http://localhost:5000/api/posts",
+        "https://linkedin-clone-b4p3.onrender.com/api/posts",
         { userName, text },
         { headers: { Authorization: `Bearer ${token}` } }
       );
@@ -95,7 +95,7 @@ function Feed() {
     if (!confirmDelete) return;
 
     try {
-      await axios.delete(`http://localhost:5000/api/posts/${id}`, {
+      await axios.delete(`https://linkedin-clone-b4p3.onrender.com/api/posts/${id}`, {
         headers: { Authorization: `Bearer ${token}` },
       });
 
@@ -115,7 +115,7 @@ function Feed() {
     }
     try {
       const res = await axios.post(
-        `http://localhost:5000/api/posts/${postId}/comments`,
+        `https://linkedin-clone-b4p3.onrender.com/api/posts/${postId}/comments`,
         { userName, text: commentText },
         { headers: { Authorization: `Bearer ${token}` } }
       );
