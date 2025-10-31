@@ -1,39 +1,45 @@
+// routes/posts.js
 const express = require("express");
-const router = express.Router();
 const Post = require("../models/Post");
 const auth = require("../middleware/auth");
 
-// ✅ GET all posts
-router.get("/", auth, async (req, res) => {
+const router = express.Router();
+
+// ✅ Create post
+router.post("/", auth, async (req, res) => {
   try {
-    const posts = await Post.find().populate("user", "name");
-    res.json(posts);
+    const { userName, text } = req.body;
+    const post = new Post({ userName, text });
+    const saved = await post.save();
+    res.json(saved);
   } catch (err) {
-    console.error("Error fetching posts:", err.message);
-    res.status(500).json({ message: "Server error" });
+    console.error("Error creating post:", err);
+    res.status(500).json({ error: "Server error creating post" });
   }
 });
 
-// ✅ CREATE a post
-router.post("/", auth, async (req, res) => {
+// ✅ Get all posts
+router.get("/", auth, async (req, res) => {
   try {
-    const { text, userName } = req.body;
-
-    if (!text || !userName) {
-      return res.status(400).json({ message: "Text and userName are required" });
-    }
-
-    const newPost = new Post({
-      user: req.user.id,
-      userName,
-      text,
-    });
-
-    const savedPost = await newPost.save();
-    res.status(201).json(savedPost);
+    const posts = await Post.find().sort({ createdAt: -1 });
+    res.json(posts);
   } catch (err) {
-    console.error("Error creating post:", err.message);
-    res.status(500).json({ message: "Server error" });
+    console.error("Error fetching posts:", err);
+    res.status(500).json({ error: "Server error fetching posts" });
+  }
+});
+
+// ✅ Delete post
+router.delete("/:id", auth, async (req, res) => {
+  try {
+    const post = await Post.findById(req.params.id);
+    if (!post) return res.status(404).json({ error: "Post not found" });
+
+    await post.deleteOne();
+    res.json({ message: "Post deleted successfully" });
+  } catch (err) {
+    console.error("Error deleting post:", err);
+    res.status(500).json({ error: "Server error deleting post" });
   }
 });
 

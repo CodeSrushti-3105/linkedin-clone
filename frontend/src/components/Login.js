@@ -15,17 +15,33 @@ function Login() {
         password,
       });
 
-      localStorage.setItem("token", res.data.token); // save token
-      alert("Login successful!");
-      navigate("/feed"); // ✅ redirect to feed
+      const { token, user } = res.data;
+
+      if (token && user) {
+        localStorage.setItem("token", token);
+        localStorage.setItem("user", JSON.stringify(user));
+        alert("Login successful!");
+        navigate("/feed");
+      } else {
+        alert("Invalid response from server. Please try again.");
+      }
     } catch (err) {
-      console.error(err);
-      alert("Login failed. Try again.");
+      console.error("Login error:", err.response?.data || err);
+      alert(err.response?.data?.message || "Login failed. Try again.");
     }
   };
 
   return (
-    <div style={{ maxWidth: "400px", margin: "50px auto", textAlign: "center" }}>
+    <div
+      style={{
+        maxWidth: "400px",
+        margin: "100px auto",
+        padding: "20px",
+        border: "1px solid #ddd",
+        borderRadius: "8px",
+        textAlign: "center",
+      }}
+    >
       <h2>Login</h2>
       <form onSubmit={handleLogin}>
         <input
@@ -33,27 +49,32 @@ function Login() {
           placeholder="Email"
           value={email}
           onChange={(e) => setEmail(e.target.value)}
-          style={{ width: "100%", marginBottom: "10px" }}
+          required
+          style={{ width: "100%", marginBottom: "10px", padding: "8px" }}
         />
         <input
           type="password"
           placeholder="Password"
           value={password}
           onChange={(e) => setPassword(e.target.value)}
-          style={{ width: "100%", marginBottom: "10px" }}
+          required
+          style={{ width: "100%", marginBottom: "10px", padding: "8px" }}
         />
-        <button type="submit">Login</button>
-      </form>
-
-      <p>
-        Don’t have an account?{" "}
-        <span
-          onClick={() => navigate("/")}
-          style={{ color: "blue", cursor: "pointer" }}
+        <button
+          type="submit"
+          style={{
+            background: "#0A66C2",
+            color: "white",
+            border: "none",
+            padding: "10px 16px",
+            borderRadius: "6px",
+            cursor: "pointer",
+            fontWeight: "bold",
+          }}
         >
-          Signup here
-        </span>
-      </p>
+          Login
+        </button>
+      </form>
     </div>
   );
 }
